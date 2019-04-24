@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "ostream": "cpp"
+    },
+    "code-runner.executorMap": {
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+		"cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "python": "python -u",
+        "kit": "kitc --run"
+    },
+    "code-runner.executorMapByFileExtension": {
+        ".cu": "cd $dir && /usr/local/cuda/bin/nvcc $fileName -o $fileNameWithoutExt --run",
+    },
+    "vscode-cudacpp.":,
+    "code-runner.customCommand": "echo Sir! Hello Mr. Kniazev, sir! && cd $workspaceRoot/build && make",
+    "code-runner.clearPreviousOutput": true,
+    "code-runner.saveAllFilesBeforeRun": true,
+    "code-runner.showExecutionMessage": true
+}

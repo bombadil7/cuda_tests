@@ -20,7 +20,9 @@ void add(vector<int> &a, const vector<int> &b, vector<int> &c) {
 }
 
 int main(int argc, char *argv[]) {
-    int len = 500000000;
+    //int len = 500000000;
+    //const int len = 500000000;
+    const int len = 10000000;
     time_t old_time, new_time;
 
     vector<int> a = init_vector(len);
