@@ -13,6 +13,23 @@
             "options": {
                 "cwd": "/usr/bin"
             }
+        },
+        {
+            "type": "shell",
+            "label": "build julia cpp",
+            "command": "g++",
+            "args": [
+                "-g",
+                "julia.cpp",
+                "-o",
+                "out",
+                "-lGL", 
+                "-lGLU",
+                "-lglut"
+            ],
+            "options": {
+                "cwd": "/home/syslabs/work/cuda-workspace/cuda_tests"
+            }
         }
     ],
     "version": "2.0.0"

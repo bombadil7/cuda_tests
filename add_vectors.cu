@@ -16,7 +16,7 @@ __global__ void add(int *a, int *b, int size) {
 int main(void){
     time_t old_time, new_time;
     
-    const int len =   15000000;
+    const int len =   10000000;
     //const int len = 500000000;
 
     int* a = (int*) malloc(len * sizeof(int));
@@ -45,12 +45,14 @@ int main(void){
 
     time(&old_time);
     add<<<65000, 1>>>(d_a, d_b, len);
+    cudaDeviceSynchronize();
     time(&new_time);
 
     HANDLE_ERROR(
         cudaMemcpy(c, d_b, len * sizeof(int),
             cudaMemcpyDeviceToHost));
 
+    printf("Allocated %ld MB of GPU memory", 2 * sizeof(int) * len /1024/1024);
     printf("Resulting array size is %d, addition took %ld seconds \n", len, new_time - old_time);
 
     free(a);

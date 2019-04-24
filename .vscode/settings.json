@@ -11,7 +11,6 @@
     "code-runner.executorMapByFileExtension": {
         ".cu": "cd $dir && /usr/local/cuda/bin/nvcc $fileName -o $fileNameWithoutExt --run",
     },
-    "vscode-cudacpp.":,
     "code-runner.customCommand": "echo Sir! Hello Mr. Kniazev, sir! && cd $workspaceRoot/build && make",
     "code-runner.clearPreviousOutput": true,
     "code-runner.saveAllFilesBeforeRun": true,
