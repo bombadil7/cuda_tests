@@ -33,8 +33,15 @@ int main(void) {
         else
             printf("Disabled\n");
 
+        printf("Can map host memory: ");
+        if (prop.canMapHostMemory)
+            printf("Yes\n");
+        else
+            printf("No\n");
+
         printf("\n   --- Memory Information for device %d ---\n",  i);
         printf("Total global mem:  %ld\n", prop.totalGlobalMem);
+        printf("Shared mem per block:  %ld\n", prop.sharedMemPerBlock);
         printf("Total constant mem:  %ld\n", prop.totalConstMem);
         printf("Total mem pitch:  %ld\n", prop.memPitch);
         printf("Texture Alignment:  %ld\n", prop.textureAlignment);
@@ -51,6 +58,7 @@ int main(void) {
         printf("Max grid dimensions: (%d, %d, %d)\n", 
                 prop.maxGridSize[0], prop.maxGridSize[1],
                 prop.maxGridSize[2]);
+
         printf("\n");
 
 
