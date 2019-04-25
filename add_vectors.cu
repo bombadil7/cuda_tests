@@ -8,15 +8,18 @@ void init_vector(int* v, int size)  {
 }
 
 __global__ void add(int *a, int *b, int size) {
-    int tid = blockIdx.x;
-    if (tid < size)
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    while (tid < size) {
         b[tid] += a[tid];
+        tid += blockDim.x * gridDim.x;
+    }
 }
 
 int main(void){
-    time_t old_time, new_time;
+    struct timespec old_time, new_time;
+    unsigned long int oldNs, newNs; 
     
-    const int len =   10000000;
+    const int len =   310000000;
     //const int len = 500000000;
 
     int* a = (int*) malloc(len * sizeof(int));
@@ -43,20 +46,32 @@ int main(void){
         cudaMemcpy(d_b, b, len * sizeof(int),
             cudaMemcpyHostToDevice));
 
-    time(&old_time);
-    add<<<65000, 1>>>(d_a, d_b, len);
+    free(a);
+    free(b);
+
+    clock_gettime(CLOCK_MONOTONIC, &old_time);
+    //add<<<65000, 1000>>>(d_a, d_b, len);
+    add<<<65031, 1024>>>(d_a, d_b, len);
     cudaDeviceSynchronize();
-    time(&new_time);
+    clock_gettime(CLOCK_MONOTONIC, &new_time);
 
     HANDLE_ERROR(
         cudaMemcpy(c, d_b, len * sizeof(int),
             cudaMemcpyDeviceToHost));
 
     printf("Allocated %ld MB of GPU memory", 2 * sizeof(int) * len /1024/1024);
-    printf("Resulting array size is %d, addition took %ld seconds \n", len, new_time - old_time);
+    oldNs = old_time.tv_sec * 1000000000ull + old_time.tv_nsec;
+    newNs = new_time.tv_sec * 1000000000ull + new_time.tv_nsec;
+    float dt = (newNs - oldNs) * 0.000000001f;
+    printf("Resulting array size is %d, addition took %0.4f seconds \n", len, dt);
 
-    free(a);
-    free(b);
+    int num_errors = 0;
+    for (int i = 0; i < len; ++i){
+        if (c[i] != -i + (i*i))
+            num_errors += 1;
+    }
+    printf("Detected %d errors\n", num_errors);
+
     free(c);
 
     cudaFree(d_a);
