@@ -1,6 +1,7 @@
+#include "book.h"
 #include "cpu_bitmap.h"
 
-#define DIM 10
+#define DIM 1000
 
 struct cuComplex {
     float r;
@@ -9,10 +10,10 @@ struct cuComplex {
     cuComplex(float a, float b) : r(a), i(b) {}
     float magnitude2(void) {return r * r + i * i;}
     cuComplex operator*(const cuComplex& a) {
-        return cuComplex(r * a.r - i * a.r, i * a.r + r * a.i);
+        return cuComplex(r * a.r - i * a.i, i * a.r + r * a.i);
     }
     cuComplex operator+(const cuComplex& a) {
-        return cuComplex(r * a.r, i * a.i);
+        return cuComplex(r + a.r, i + a.i);
     }
 };
 
@@ -25,10 +26,11 @@ int julia(int x, int y) {
     cuComplex a(jx, jy);
 
     int i = 0;
-    for (i = 0; i < 200; ++i) {
+    for (i = 0; i < 220; ++i) {
         a = a * a + c;
-        if (a.magnitude2() > 1000)
+        if (a.magnitude2() > 1000) {
             return 0;
+        }
     }
 
     return 1;
@@ -50,7 +52,7 @@ void kernel(unsigned char *ptr) {
 
 int main(void) {
     CPUBitmap bitmap(DIM, DIM);
-    unsigned char *ptr = (unsigned char*) bitmap.get_bitmap_ptr();
+    unsigned char *ptr = (unsigned char*) bitmap.get_ptr();
 
     kernel(ptr);
 

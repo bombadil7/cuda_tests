@@ -19,7 +19,7 @@ int main(void){
     struct timespec old_time, new_time;
     unsigned long int oldNs, newNs; 
     
-    const int len =   310000000;
+    const int len =   30000000;
     //const int len = 500000000;
 
     int* a = (int*) malloc(len * sizeof(int));
@@ -76,6 +76,5 @@ int main(void){
 
     cudaFree(d_a);
     cudaFree(d_b);
-  //  cudaFree(d_c);
     return 0;
 }
