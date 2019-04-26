@@ -32,7 +32,7 @@ __device__ int julia(int x, int y) {
     cuComplex a(jx, jy);
 
     int i = 0;
-    for (i = 0; i < 220; ++i) {
+    for (i = 0; i < 400; ++i) {
         a = a * a + c;
         if (a.magnitude2() > 1000) {
             return 0;

@@ -22,42 +22,19 @@ int main(void){
     const int len =   50000000;
     //const int len = 500000000;
 
-    int* a = (int*) malloc(len * sizeof(int));
-    int* b = (int*) malloc(len * sizeof(int));
-    int* c = (int*) malloc(len * sizeof(int));
-
     int *d_a, *d_b;
-    HANDLE_ERROR( cudaMalloc((void**) &d_a, len * sizeof(int)) );
-    HANDLE_ERROR( cudaMalloc((void**) &d_b, len * sizeof(int)) );
- //   HANDLE_ERROR( cudaMalloc((void**) &d_c, len * sizeof(int)) );
+    HANDLE_ERROR( cudaMallocManaged((void**) &d_a, len * sizeof(int)) );
+    HANDLE_ERROR( cudaMallocManaged((void**) &d_b, len * sizeof(int)) );
 
-
-    //init_vector(a, len);
-    //init_vector(b, len);
     for (int i = 0; i < len; ++i){
-        a[i] = -i;
-        b[i] = i * i;
+        d_a[i] = -i;
+        d_b[i] = i * i;
     }
 
-    HANDLE_ERROR(
-        cudaMemcpy(d_a, a, len * sizeof(int), 
-            cudaMemcpyHostToDevice));
-    HANDLE_ERROR(
-        cudaMemcpy(d_b, b, len * sizeof(int),
-            cudaMemcpyHostToDevice));
-
-    free(a);
-    free(b);
-
     clock_gettime(CLOCK_MONOTONIC, &old_time);
-    //add<<<65000, 1000>>>(d_a, d_b, len);
-    add<<<65031, 1024>>>(d_a, d_b, len);
+    add<<<65000, 1024>>>(d_a, d_b, len);
     cudaDeviceSynchronize();
     clock_gettime(CLOCK_MONOTONIC, &new_time);
-
-    HANDLE_ERROR(
-        cudaMemcpy(c, d_b, len * sizeof(int),
-            cudaMemcpyDeviceToHost));
 
     printf("Allocated %ld MB of GPU memory", 2 * sizeof(int) * len /1024/1024);
     oldNs = old_time.tv_sec * 1000000000ull + old_time.tv_nsec;
@@ -67,12 +44,10 @@ int main(void){
 
     int num_errors = 0;
     for (int i = 0; i < len; ++i){
-        if (c[i] != -i + (i*i))
+        if (d_b[i] != -i + (i*i))
             num_errors += 1;
     }
     printf("Detected %d errors\n", num_errors);
-
-    free(c);
 
     cudaFree(d_a);
     cudaFree(d_b);
