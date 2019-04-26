@@ -4,12 +4,12 @@
     },
     "code-runner.executorMap": {
         "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
-		"cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+		"cpp": "cd $dir && /usr/local/cuda/bin/nvcc -lGL -lglut $fileName -o out --run",
         "python": "python -u",
         "kit": "kitc --run"
     },
     "code-runner.executorMapByFileExtension": {
-        ".cu": "cd $dir && /usr/local/cuda/bin/nvcc $fileName -o $fileNameWithoutExt --run",
+        ".cu": "cd $dir && /usr/local/cuda/bin/nvcc -lGL -lglut $fileName -o out --run",
     },
     "code-runner.customCommand": "echo Sir! Hello Mr. Kniazev, sir! && cd $workspaceRoot/build && make",
     "code-runner.clearPreviousOutput": true,

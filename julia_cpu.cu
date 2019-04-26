@@ -1,5 +1,10 @@
-#include "book.h"
+//#include "book.h"
 #include "cpu_bitmap.h"
+/*
+ * Note: make sure to include openGL libraries for linking:
+ * nvcc -lGL -lglut -o out julia_gpu.cu --run
+ * otherwise it won't link!!!
+ */
 
 #define DIM 1000
 

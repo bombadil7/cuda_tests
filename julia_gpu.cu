@@ -1,9 +1,14 @@
 #include "book.h"
 #include "cpu_bitmap.h"
+/*
+ * Note: make sure to include openGL libraries for linking:
+ * nvcc -lGL -lglut -o out julia_gpu.cu --run
+ * otherwise it won't link!!!
+ */
 
 #define DIM 1000
 
-__device__ struct cuComplex {
+struct cuComplex {
     float r;
     float i;
 
@@ -16,6 +21,7 @@ __device__ struct cuComplex {
         return cuComplex(r + a.r, i + a.i);
     }
 };
+
 
 __device__ int julia(int x, int y) {
     const float scale = 1.5;
@@ -32,6 +38,7 @@ __device__ int julia(int x, int y) {
             return 0;
         }
     }
+
 
     return 1;
 }
