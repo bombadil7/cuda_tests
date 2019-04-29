@@ -1,4 +1,5 @@
 #include "book.h"
+#include <time.h>
 
 #define imin(a, b) (a < b ? a : b)
 
@@ -34,6 +35,9 @@ __global__ void dot(float *a, float *b, float *c) {
 
 
 int main(void) {
+    struct timespec old_time, new_time;
+    unsigned long int oldNs, newNs; 
+
     float *a, *b, c, *partial_c;
     float *dev_a, *dev_b, *dev_partial_c;
 
@@ -53,9 +57,18 @@ int main(void) {
     HANDLE_ERROR( cudaMemcpy(dev_a, a, N * sizeof(float), cudaMemcpyHostToDevice) );
     HANDLE_ERROR( cudaMemcpy(dev_b, b, N * sizeof(float), cudaMemcpyHostToDevice) );
 
+    clock_gettime(CLOCK_MONOTONIC, &old_time);
     dot <<<blocksPerGrid, threadsPerBlock>>> (dev_a, dev_b, dev_partial_c);
-
+    cudaDeviceSynchronize();
     HANDLE_ERROR( cudaMemcpy(partial_c, dev_partial_c, blocksPerGrid * sizeof(float), cudaMemcpyDeviceToHost) );
+
+    clock_gettime(CLOCK_MONOTONIC, &new_time);
+    oldNs = old_time.tv_sec * 1000000000ull + old_time.tv_nsec;
+    newNs = new_time.tv_sec * 1000000000ull + new_time.tv_nsec;
+    float dt = (newNs - oldNs) * 0.000000001f;
+    printf("Original vector sizes were %d, dot product took %0.6f seconds \n", N, dt);
+
+    //HANDLE_ERROR( cudaMemcpy(partial_c, dev_partial_c, blocksPerGrid * sizeof(float), cudaMemcpyDeviceToHost) );
 
     c = 0;
     for (int i = 0; i < blocksPerGrid; ++i) {
