@@ -84,20 +84,21 @@ int main(void) {
 
 if __name__=="__main__":
     f_name = 'test.cu'
-
-    blockSize = 64 
     vectorSizeK = 3300 
-    times = []
-    for _ in range(10):
+
+    for power in range(3, 11):
+        blockSize = 2 ** power 
+        times = []
         gen_file(f_name, vectorSizeK, blockSize)
-        result = subprocess.run(['/usr/local/cuda/bin/nvcc', 
+        subprocess.run(['/usr/local/cuda/bin/nvcc', 
                             '-o', 
                             'out', 
-                            f_name, '--run'], 
-                            stdout=subprocess.PIPE)
-        times.append(float(result.stdout))
-        print(float(result.stdout), end=' ')
-        sys.stdout.flush()
+                            f_name])
+        for _ in range(300):
+            result = subprocess.run(['./out'], stdout=subprocess.PIPE)
+            times.append(float(result.stdout))
+            print(float(result.stdout), end=' ')
+            sys.stdout.flush()
 
-    print(f"\nAverage run time for block size of {blockSize} threads is {sum(times)/len(times)} seconds")
+        print(f"\nAverage run time for block size of {blockSize} threads is {sum(times)/len(times):.6f} seconds")
                         
